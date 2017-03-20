@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import Interfaz.ClienteTCP;
 
 public class Servidor 
 {
