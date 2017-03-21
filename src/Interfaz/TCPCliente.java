@@ -11,9 +11,13 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import javax.swing.JTextField;
+import javax.print.DocFlavor.STRING;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.awt.event.ActionEvent;
 import javax.swing.JEditorPane;
@@ -23,6 +27,7 @@ import javax.swing.JScrollBar;
 import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
+import javax.swing.JList;
 
 public class TCPCliente extends JFrame implements ActionListener{
 
@@ -32,19 +37,21 @@ public class TCPCliente extends JFrame implements ActionListener{
 	 private static final String DETENER_COMUNICACION = "Detener";
 	 private static final String INICIAR_COMUNICACION = "Iniciar Comunicación";
 	 private static final String INICIAR_DESCARGA = "Iniciar descarga";
-	
+	 private static final String ARCHIVO_5MG = "direccion1";
+	 private static final String ARCHIVO_20MG = "direccion2";
+	 private static final String ARCHIVO_50MG = "direccion3";
+	 
 	private JPanel contentPane;
 	private JTextField textFieldHost;
 	private JTextField textFieldPuerto;
-	private JTextField textFieldTamanio;
 	private JButton btnAgregarHost;
-	private JButton btnAgregarTam;
 	private JButton btnAgregarPuerto;
 	private JButton btnIniciarcomunicacin;
 	private JButton btnDetenerComunicacin;
 	private JButton btnDescarga;
 	private JButton btnDetnerDescarga;
 	private JTextArea txtrArea;
+	private JComboBox comboBox;
 	
 	private String host;
 	private int puerto;
@@ -80,7 +87,10 @@ public class TCPCliente extends JFrame implements ActionListener{
 			
 			outToServer.writeUTF("ana");
 			
-			//BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			
+			
+			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			mostrarMensaje(inFromServer.readLine());
 			
 			//sentence = inFromUser.readLine();
 			//outToServer.writeBytes("ana");
@@ -116,6 +126,7 @@ public class TCPCliente extends JFrame implements ActionListener{
 		contentPane.setLayout(null);
 		
 		JLabel lblBienvenidoAlCliente = DefaultComponentFactory.getInstance().createTitle("Bienvenido al Cliente de Comunicaci\u00F3n TCP");
+		lblBienvenidoAlCliente.setForeground(new Color(0, 102, 255));
 		lblBienvenidoAlCliente.setBounds(179, 11, 298, 25);
 		contentPane.add(lblBienvenidoAlCliente);
 		
@@ -129,20 +140,10 @@ public class TCPCliente extends JFrame implements ActionListener{
 		contentPane.add(textFieldPuerto);
 		textFieldPuerto.setColumns(10);
 		
-		textFieldTamanio = new JTextField();
-		textFieldTamanio.setBounds(165, 109, 86, 20);
-		contentPane.add(textFieldTamanio);
-		textFieldTamanio.setColumns(10);
-		
 		btnAgregarHost = new JButton("Agregar Host");
 		btnAgregarHost.addActionListener(this);
 		btnAgregarHost.setBounds(10, 46, 137, 23);
 		contentPane.add(btnAgregarHost);
-		
-		btnAgregarTam = new JButton("Agregar Tama\u00F1o");
-		btnAgregarTam.addActionListener(this);
-		btnAgregarTam.setBounds(10, 110, 137, 23);
-		contentPane.add(btnAgregarTam);
 		
 		btnAgregarPuerto = new JButton("Agregar Puerto");
 		btnAgregarPuerto.setBounds(10, 77, 137, 23);
@@ -150,31 +151,31 @@ public class TCPCliente extends JFrame implements ActionListener{
 		contentPane.add(btnAgregarPuerto);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 202, 266, 2);
+		separator.setBounds(10, 214, 312, 2);
 		contentPane.add(separator);
 		
 		btnIniciarcomunicacin = new JButton("Iniciar Comunicaci\u00F3n");
 		btnIniciarcomunicacin.addActionListener(this);
-		btnIniciarcomunicacin.setBounds(10, 142, 167, 23);
+		btnIniciarcomunicacin.setBounds(10, 109, 167, 23);
 		contentPane.add(btnIniciarcomunicacin);
 		
 		btnDetenerComunicacin = new JButton("Detener comunicaci\u00F3n");
-		btnDetenerComunicacin.setBounds(10, 168, 167, 23);
+		btnDetenerComunicacin.setBounds(10, 143, 167, 23);
 		btnDetenerComunicacin.addActionListener(this);
 		contentPane.add(btnDetenerComunicacin);
 		
 		btnDescarga = new JButton("Descarga");
-		btnDescarga.setBounds(185, 142, 137, 23);
+		btnDescarga.setBounds(185, 109, 137, 23);
 		btnDescarga.addActionListener(this);
 		contentPane.add(btnDescarga);
 		
 		btnDetnerDescarga = new JButton("Detener descarga");
 		btnDetnerDescarga.addActionListener(this);
-		btnDetnerDescarga.setBounds(185, 168, 137, 23);
+		btnDetnerDescarga.setBounds(185, 143, 137, 23);
 		contentPane.add(btnDetnerDescarga);
 		
 		JLabel lblEstadoComunicacin = new JLabel("Estado comunicaci\u00F3n");
-		lblEstadoComunicacin.setBounds(26, 202, 151, 31);
+		lblEstadoComunicacin.setBounds(26, 214, 151, 31);
 		contentPane.add(lblEstadoComunicacin);
 		
 		JSeparator separator_1 = new JSeparator();
@@ -187,8 +188,20 @@ public class TCPCliente extends JFrame implements ActionListener{
 		contentPane.add(txtrArea);
 		
 		JLabel lblArchivosDescargados = new JLabel("Archivos descargados");
-		lblArchivosDescargados.setBounds(390, 47, 127, 25);
+		lblArchivosDescargados.setBounds(412, 47, 182, 25);
 		contentPane.add(lblArchivosDescargados);
+		
+		comboBox = new JComboBox();
+		comboBox.setBounds(165, 183, 127, 20);
+		comboBox.addItem(ARCHIVO_5MG);
+		comboBox.addItem(ARCHIVO_20MG);
+		comboBox.addItem(ARCHIVO_50MG);
+		comboBox.addActionListener(this);
+		contentPane.add(comboBox);
+		
+		JLabel lblSeleccioneArchivo = new JLabel("Seleccione archivo");
+		lblSeleccioneArchivo.setBounds(20, 177, 127, 26);
+		contentPane.add(lblSeleccioneArchivo);
 	}
 
 	@Override
@@ -211,7 +224,18 @@ public class TCPCliente extends JFrame implements ActionListener{
         	comunicacion();
         	 mostrarMensaje("Se empieza la comunicacción con el servidor...");
         }
-	
+        if( comando.equals( ARCHIVO_5MG ))
+        {
+        	
+        }
+        if( comando.equals( ARCHIVO_20MG ))
+        {
+        	
+        }
+        if( comando.equals( ARCHIVO_50MG ))
+        {
+        	
+        }
 		
 	}
 }
