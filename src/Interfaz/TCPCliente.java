@@ -28,6 +28,7 @@ import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.JList;
+import javax.swing.DefaultComboBoxModel;
 
 public class TCPCliente extends JFrame implements ActionListener{
 
@@ -37,9 +38,11 @@ public class TCPCliente extends JFrame implements ActionListener{
 	 private static final String DETENER_COMUNICACION = "Detener";
 	 private static final String INICIAR_COMUNICACION = "Iniciar Comunicación";
 	 private static final String INICIAR_DESCARGA = "Iniciar descarga";
-	 private static final String ARCHIVO_5MG = "direccion1";
-	 private static final String ARCHIVO_20MG = "direccion2";
-	 private static final String ARCHIVO_50MG = "direccion3";
+	 private static final String ARCHIVO_5MB = "ARCHIVO_5MB";
+	 private static final String ARCHIVO_20MB = "ARCHIVO_20MB";
+	 private static final String ARCHIVO_50MB = "ARCHIVO_50MB";
+	 private static final String DESCARGA = "Descarga";
+	 
 	 
 	private JPanel contentPane;
 	private JTextField textFieldHost;
@@ -52,6 +55,8 @@ public class TCPCliente extends JFrame implements ActionListener{
 	private JButton btnDetnerDescarga;
 	private JTextArea txtrArea;
 	private JComboBox comboBox;
+	
+	private String archivoSelecionado;
 	
 	private String host;
 	private int puerto;
@@ -72,33 +77,33 @@ public class TCPCliente extends JFrame implements ActionListener{
 		});
 	}
 
+	public void establecerArchivoSeleccioando(String pA)
+	{
+		this.archivoSelecionado = pA;
+	}
+	
 	public void comunicacion()
 	{
 		try{
 			mostrarMensaje("Se reciben los datos para iniciar comunicación....");
 			mostrarMensaje("Esperando...");
 			
-			//BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-			//BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+	
 			Socket clientSocket = new Socket(host, puerto);
 			
 			
 			DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
 			
-			outToServer.writeUTF("ana");
+			outToServer.writeUTF(archivoSelecionado);
+			System.out.println(archivoSelecionado+"DEL CLIENTE");
+			//outToServer.writeUTF("ana");
 			
 			
 			
-			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			mostrarMensaje(inFromServer.readLine());
+			DataInputStream flujo = new DataInputStream(clientSocket.getInputStream());
 			
-			//sentence = inFromUser.readLine();
-			//outToServer.writeBytes("ana");
+			mostrarMensaje(flujo.readLine());
 			
-			//mostrarMensaje(textFieldMensaje.getText());
-			//mostrarMensaje(inFromServer.readLine());
-			//modifiedSentence = inFromServer.readLine();
-			//System.out.println("FROM SERVER: " + modifiedSentence);
 			clientSocket.close();
 			
 		}
@@ -174,7 +179,7 @@ public class TCPCliente extends JFrame implements ActionListener{
 		btnDetnerDescarga.setBounds(185, 143, 137, 23);
 		contentPane.add(btnDetnerDescarga);
 		
-		JLabel lblEstadoComunicacin = new JLabel("Estado comunicaci\u00F3n");
+		JLabel lblEstadoComunicacin = new JLabel("Estado comunicaci\u00F3n"+"\n");
 		lblEstadoComunicacin.setBounds(26, 214, 151, 31);
 		contentPane.add(lblEstadoComunicacin);
 		
@@ -183,7 +188,7 @@ public class TCPCliente extends JFrame implements ActionListener{
 		contentPane.add(separator_1);
 		
 		txtrArea = new JTextArea();
-		txtrArea.setText("Esperando datos...");
+		txtrArea.setText("Esperando datos..."+"\n");
 		txtrArea.setBounds(26, 244, 355, 174);
 		contentPane.add(txtrArea);
 		
@@ -192,11 +197,12 @@ public class TCPCliente extends JFrame implements ActionListener{
 		contentPane.add(lblArchivosDescargados);
 		
 		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"ARCHIVO_5MB", "ARCHIVO_20MB", "ARCHIVO_50MB"}));
 		comboBox.setBounds(165, 183, 127, 20);
-		comboBox.addItem(ARCHIVO_5MG);
-		comboBox.addItem(ARCHIVO_20MG);
-		comboBox.addItem(ARCHIVO_50MG);
-		comboBox.addActionListener(this);
+		//comboBox.addItem(ARCHIVO_5MB);
+		//comboBox.addItem(ARCHIVO_20MB);
+		//comboBox.addItem(ARCHIVO_50MB);
+		//comboBox.addActionListener(this);
 		contentPane.add(comboBox);
 		
 		JLabel lblSeleccioneArchivo = new JLabel("Seleccione archivo");
@@ -222,20 +228,12 @@ public class TCPCliente extends JFrame implements ActionListener{
         if( comando.equals( INICIAR_COMUNICACION ))
         {
         	comunicacion();
-        	 mostrarMensaje("Se empieza la comunicacción con el servidor...");
+        	// mostrarMensaje("Se empieza la comunicacción con el servidor...");
         }
-        if( comando.equals( ARCHIVO_5MG ))
+        if( comando.equals( DESCARGA ))
         {
-        	
+        	establecerArchivoSeleccioando(comboBox.getSelectedItem().toString());
         }
-        if( comando.equals( ARCHIVO_20MG ))
-        {
         	
-        }
-        if( comando.equals( ARCHIVO_50MG ))
-        {
-        	
-        }
-		
 	}
 }
