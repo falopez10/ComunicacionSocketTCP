@@ -30,10 +30,10 @@ public class Servidor
 	    File archivo;
 	    
 	  //Establecemos el timeout del socket
-		//welcomeSocket.setSoTimeout(10000);
+		welcomeSocket.setSoTimeout(30000);
 		
 	    
-	    //Rutas de los archivos
+	    //Rutas de los archivos a descargar
 	    String ARCHIVO_5MB = "src/Comunicacion/GK Video 5MB.mp4";
 	    String ARCHIVO_20MB = "src/Comunicacion/6 min video  20 mb.mp4";
 		String ARCHIVO_50MB = "src/Comunicacion/HOW TO MAKE EMOJI COOKIES - NERDY ";
