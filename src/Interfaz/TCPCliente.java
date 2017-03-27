@@ -142,8 +142,9 @@ public class TCPCliente extends JFrame implements ActionListener{
 			byte[] bytesArchivo = new byte[inputBytes.size()];
 			for(int i = 0; i < inputBytes.size(); i++)
 				bytesArchivo[i] = inputBytes.get(i).byteValue();
-			File archivo = new File("./recibido/nuevo.mp4");
-			FileOutputStream fos = new FileOutputStream("./recibido/nuevo.mp4");
+			
+			File archivo = new File("./recibido/"+archivoSelecionado+".mp4");
+			FileOutputStream fos = new FileOutputStream("./recibido/"+archivoSelecionado+".mp4");
 			fos.write(bytesArchivo);
 			fos.close();
 			System.out.println("Archivo es "+bytesArchivo);
